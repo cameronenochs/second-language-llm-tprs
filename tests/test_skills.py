@@ -44,6 +44,13 @@ class StageGateTests(unittest.TestCase):
             self.assertIn(needle, text)
         self.assertNotIn("--api-key", text)
 
+    def test_pipeline_gates(self):
+        text = skill_text("tprs-pipeline")
+        self.assertIn("Do I go full auto, or do you want to approve each stage?", text)
+        for stage in ("clean-source-text", "tprs-expand", "proofread-dialogue",
+                      "format-for-elevenlabs", "generate-dialogue-audio"):
+            self.assertIn(stage, text)
+
 
 if __name__ == "__main__":
     unittest.main()
