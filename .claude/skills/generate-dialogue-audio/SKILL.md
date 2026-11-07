@@ -19,6 +19,10 @@ Render `dialogue.elevenlabs.txt` to `dialogue.mp3`. Assumes the working director
    `python3 scripts/tprs_audio.py <chapter-dir>/dialogue.elevenlabs.txt <chapter-dir>/dialogue.mp3 --language <language>`
    Report the script's error text verbatim on failure (401 means the key was rejected, 402 means a plan or credits issue). Do not retry in a loop.
 
+## Failed mid-render
+
+Rendered clips are kept in `<output>.parts/`. After fixing the cause (credits, network), re-run the same command: clips already rendered for unchanged text are reused and not billed again. The folder is removed after a successful render.
+
 ## Redo
 
 To regenerate after hand-editing the dialogue, run steps 4-5 again; no earlier stage needs to re-run.

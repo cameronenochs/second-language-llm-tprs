@@ -16,7 +16,8 @@ Before anything else, ask the user, verbatim:
 ## Setup
 
 1. Get the source text (pasted or a file path), the source language, a source slug (one per book/course), and a chapter slug.
-2. Create `output/<source-slug>/<chapter-slug>/`. Every artifact from this run goes inside it: `original.txt`, `dialogue.txt`, `dialogue.elevenlabs.txt`, `test-4lines.mp3`, `dialogue.mp3`.
+2. Ask now, once, the questions later stages would otherwise stop to ask: the target ACTFL level (for `tprs-expand`) and the language's or-word (for `format-for-elevenlabs`). Pass the answers to those stages so full auto does not pause mid-run.
+3. Create `output/<source-slug>/<chapter-slug>/`. Every artifact from this run goes inside it: `original.txt`, `dialogue.txt`, `dialogue.elevenlabs.txt`, `test-4lines.mp3`, `dialogue.mp3`.
 
 ## Stages
 

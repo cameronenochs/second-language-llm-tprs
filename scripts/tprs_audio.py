@@ -11,6 +11,7 @@ Usage:
   tprs_audio.py INPUT OUTPUT --language L [--model M] [--limit N] [--config P]
 """
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -32,13 +33,26 @@ from tprs_config import (  # noqa: E402
 
 # Only pause-like markers become real <break> SSML; any other [marker] is dropped.
 PAUSE_MARKERS = {"pause": "0.5s", "slowly": "0.3s"}
-MARKER_RE = re.compile(r"\[([a-zA-Z ]+)\]")
+MARKER_RE = re.compile(r"\[([^\]]+)\]")
 BREAK_RE = re.compile(r"<break [^>]*/>")
 TURN_RE =re.compile(r"^(Teacher|Learner):\s*(.*)$")
 
 
 class TTSError(Exception):
     pass
+
+
+class FFmpegError(Exception):
+    pass
+
+
+def run_ffmpeg(args):
+    try:
+        subprocess.run(["ffmpeg", *args], check=True, capture_output=True)
+    except FileNotFoundError:
+        raise FFmpegError("ffmpeg not found on PATH")
+    except subprocess.CalledProcessError as e:
+        raise FFmpegError(f"ffmpeg failed: {e.stderr.decode(errors='replace')[-500:]}")
 
 
 def markers_to_breaks(text: str) -> str:
@@ -89,21 +103,22 @@ def tts(text, voice_id, api_key, out_path, model_id, voice_settings,
         headers={"xi-api-key": api_key, "Content-Type": "application/json", "Accept": "audio/mpeg"},
     )
     try:
-        with urllib.request.urlopen(req) as resp, open(out_path, "wb") as f:
+        with urllib.request.urlopen(req, timeout=120) as resp, open(out_path, "wb") as f:
             shutil.copyfileobj(resp, f)
     except urllib.error.HTTPError as e:
         if e.code == 401:
             raise TTSError("ElevenLabs rejected the API key (401)")
         if e.code == 402:
             raise TTSError("ElevenLabs plan/credits issue (402)")
-        raise TTSError(f"ElevenLabs error {e.code}")
+        detail = e.read(2000).decode(errors="replace").strip() if e.fp else ""
+        raise TTSError(f"ElevenLabs error {e.code}: {detail}" if detail else f"ElevenLabs error {e.code}")
+    except (urllib.error.URLError, TimeoutError) as e:
+        raise TTSError(f"network error: {getattr(e, 'reason', e)}")
 
 
 def make_silence(out_path: str, seconds: float = 0.4):
-    subprocess.run([
-        "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono",
-        "-t", str(seconds), "-q:a", "9", out_path,
-    ], check=True, capture_output=True)
+    run_ffmpeg(["-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono",
+                "-t", str(seconds), "-q:a", "9", out_path])
 
 
 def main(argv=None):
@@ -143,6 +158,10 @@ def main(argv=None):
     }
     lang_code = os.environ.get("ELEVENLABS_LANGUAGE_CODE")
     os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)
+    # Clips live beside the output so a mid-run failure (402, network) keeps the
+    # quota already spent; the name hashes voice+model+text so edits never reuse stale audio.
+    parts = os.path.abspath(args.output) + ".parts"
+    os.makedirs(parts, exist_ok=True)
 
     try:
         with tempfile.TemporaryDirectory() as tmp:
@@ -151,20 +170,20 @@ def main(argv=None):
             concat_list = os.path.join(tmp, "list.txt")
             with open(concat_list, "w") as list_f:
                 for i, (speaker, text) in enumerate(turns):
-                    clip = os.path.join(tmp, f"{i:04d}.mp3")
+                    key = hashlib.sha1(f"{voices[speaker]}|{model_id}|{text}".encode()).hexdigest()[:10]
+                    clip = os.path.join(parts, f"{i:04d}-{key}.mp3")
                     print(f"[{i+1}/{len(turns)}] {speaker}: {text[:60]}")
-                    tts(text, voices[speaker], api_key, clip, model_id, voice_settings, lang_code,
-                        turns[i - 1][1] if i > 0 else None,
-                        turns[i + 1][1] if i < len(turns) - 1 else None)
+                    if not (os.path.exists(clip) and os.path.getsize(clip) > 0):
+                        tts(text, voices[speaker], api_key, clip, model_id, voice_settings, lang_code,
+                            turns[i - 1][1] if i > 0 else None,
+                            turns[i + 1][1] if i < len(turns) - 1 else None)
                     list_f.write(f"file '{clip}'\n")
                     if i < len(turns) - 1:
                         list_f.write(f"file '{silence}'\n")
-            subprocess.run([
-                "ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                "-i", concat_list, "-c", "copy", args.output,
-            ], check=True, capture_output=True)
-    except TTSError as e:
+            run_ffmpeg(["-y", "-f", "concat", "-safe", "0", "-i", concat_list, "-c", "copy", args.output])
+    except (TTSError, FFmpegError) as e:
         sys.exit(f"error: {e}")
+    shutil.rmtree(parts, ignore_errors=True)
 
     print(f"done -> {args.output}")
 

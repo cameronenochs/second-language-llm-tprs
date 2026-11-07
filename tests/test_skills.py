@@ -51,6 +51,12 @@ class StageGateTests(unittest.TestCase):
             self.assertIn(needle, text)
         self.assertNotIn("--api-key", text)
 
+    def test_pipeline_collects_stage_questions_up_front(self):
+        text = skill_text("tprs-pipeline")
+        setup = text[text.index("## Setup"):text.index("## Stages")]
+        self.assertIn("ACTFL", setup)
+        self.assertIn("or-word", setup)
+
     def test_pipeline_gates(self):
         text = skill_text("tprs-pipeline")
         self.assertIn("Do I go full auto, or do you want to approve each stage?", text)
