@@ -1,0 +1,5 @@
+tprs.config.json
+output/
+__pycache__/
+.superpowers/
+.claude/worktrees/
