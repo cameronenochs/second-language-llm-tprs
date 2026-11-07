@@ -3,3 +3,10 @@ output/
 __pycache__/
 .superpowers/
 .claude/worktrees/
+
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json

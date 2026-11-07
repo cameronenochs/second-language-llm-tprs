@@ -50,6 +50,8 @@ python3 scripts/tprs_audio.py IN.txt OUT.mp3 --language latin --limit 4
 python3 -m unittest discover -s tests -v
 ```
 
+Pull requests into `main` must pass the `tests`, `gitleaks`, `codeql`, and `dependency-review` checks. Report vulnerabilities through [Security Advisories](https://github.com/cameronenochs/second-language-llm-tprs/security/advisories/new), not public issues.
+
 ## Not built yet
 
 Cross-lesson vocabulary and grammar tracking (so later chapters can circle on earlier vocabulary) is a deferred v2 idea.
