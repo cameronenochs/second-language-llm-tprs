@@ -38,6 +38,13 @@ def skill_text(name):
 
 
 class StageGateTests(unittest.TestCase):
+    def test_all_six_skills_present(self):
+        names = {os.path.basename(os.path.dirname(p)) for p in SKILL_FILES}
+        self.assertEqual(names, {
+            "clean-source-text", "tprs-expand", "proofread-dialogue",
+            "format-for-elevenlabs", "generate-dialogue-audio", "tprs-pipeline",
+        })
+
     def test_audio_skill_gates(self):
         text = skill_text("generate-dialogue-audio")
         for needle in ("ELEVENLABS_API_KEY", "--limit 4", "test-4lines.mp3", "confirm"):
