@@ -33,5 +33,17 @@ class SkillLintTests(unittest.TestCase):
             self.assertIsNone(re.search(r"sk_[0-9a-f]{20,}|xi-api-key:\s*\S+", text), path)
 
 
+def skill_text(name):
+    return read(os.path.join(ROOT, ".claude", "skills", name, "SKILL.md"))
+
+
+class StageGateTests(unittest.TestCase):
+    def test_audio_skill_gates(self):
+        text = skill_text("generate-dialogue-audio")
+        for needle in ("ELEVENLABS_API_KEY", "--limit 4", "test-4lines.mp3", "confirm"):
+            self.assertIn(needle, text)
+        self.assertNotIn("--api-key", text)
+
+
 if __name__ == "__main__":
     unittest.main()
