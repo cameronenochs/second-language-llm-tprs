@@ -2,7 +2,21 @@
 
 ![Listen, in Spanish, Arabic, Russian, Hindi, Chinese, and Korean](docs/header.png)
 
-You already have the chapter. This turns it into a conversation you can listen to.
+Fluency takes lots and lots of meaningful, interesting communication. You listen and watch. Then, when you are ready, you mimic. Then you improvise, with more skill and less guesswork.
+
+I started this project because the ancient languages I study have very little of that. For Latin, I scraped the internet and found 460 hours of spoken audio. I did not need more grammar. I needed more *Hebdomada Papae* at my level, and *Hebdomada* was past it. These skills make that kind of listening from the chapter you already have.
+
+I am building this for ancient languages. The same steps work for modern ones.
+
+### Languages tested
+
+- [ ] German
+- [ ] Hebrew
+- [ ] Italian
+- [ ] Koine Greek
+- [ ] Modern Greek
+- [ ] Spanish (in progress)
+- [x] Latin
 
 ## 1. The problem
 
