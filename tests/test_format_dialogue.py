@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
-from format_dialogue import format_dialogue
+from format_dialogue import format_dialogue, format_reading
 
 
 class FormatDialogueTests(unittest.TestCase):
@@ -37,6 +37,12 @@ class FormatDialogueTests(unittest.TestCase):
 
     def test_crlf_input(self):
         self.assertEqual(format_dialogue("Teacher: a\r\nLearner: b\r\n"), "Teacher: a\nLearner: b\n")
+
+
+class FormatReadingTests(unittest.TestCase):
+    def test_normalizes_plain_lines_and_drops_unknown_markers(self):
+        out = format_reading("Una  [pause]  [pause] est , [laughs] domus.\n\nAltera.")
+        self.assertEqual(out, "Una [pause] est, domus.\n\nAltera.")
 
 
 if __name__ == "__main__":

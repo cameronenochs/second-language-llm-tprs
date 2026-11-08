@@ -95,10 +95,14 @@ Project skills live in `.agents/skills/`. Codex, Grok, and Gemini CLI load that 
 | `format-for-elevenlabs` | `dialogue.elevenlabs.txt` |
 | `generate-dialogue-audio` | `test-4lines.mp3`, then `dialogue.mp3` after you confirm |
 | `tprs-pipeline` | runs the five in order |
+| `adapt-reading-level` | `adapted.txt`, only if you want the text simplified |
+| `format-for-narration` | `reading.elevenlabs.txt` |
+| `generate-reading-audio` | `test-4lines.mp3`, then `reading.mp3` after you confirm |
+| `audiobook-pipeline` | a straight one-voice reading: clean, optional level change, format, audio |
 
 ### Config
 
-Copy `tprs.config.example.json` to `tprs.config.json` (gitignored). Fill in voice IDs per language, or let the audio step ask and save them. The file holds voice IDs and the default voice model (`eleven_v4`). The API key stays in the environment.
+Copy `tprs.config.example.json` to `tprs.config.json` (gitignored). Fill in voice IDs per language (`narrator_voice_id` is for the audiobook pipeline), or let the audio step ask and save them. The file holds voice IDs and the default voice model (`eleven_v4`). The API key stays in the environment.
 
 ### Output
 
@@ -109,6 +113,9 @@ output/<source-slug>/<chapter-slug>/
   dialogue.elevenlabs.txt
   test-4lines.mp3
   dialogue.mp3
+  adapted.txt            (audiobook, optional)
+  reading.elevenlabs.txt (audiobook)
+  reading.mp3            (audiobook)
 ```
 
 ### Scripts

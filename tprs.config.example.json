@@ -3,11 +3,13 @@
     "latin": {
       "teacher_voice_id": "...",
       "learner_voice_id": "...",
+      "narrator_voice_id": "...",
       "default_model_id": "eleven_v4"
     },
     "italian": {
       "teacher_voice_id": "...",
       "learner_voice_id": "...",
+      "narrator_voice_id": "...",
       "default_model_id": "eleven_v4"
     }
   }

@@ -7,8 +7,11 @@ TEACHER_VOICE_ID / LEARNER_VOICE_ID / ELEVENLABS_MODEL_ID env vars override.
 The API key comes only from ELEVENLABS_API_KEY.
 Optional env: ELEVENLABS_LANGUAGE_CODE, ELEVENLABS_STABILITY, ELEVENLABS_STYLE.
 
+With --mode reading, every non-blank line is read by one narrator voice
+(narrator_voice_id / NARRATOR_VOICE_ID) and the line is the unit of --limit.
+
 Usage:
-  tprs_audio.py INPUT OUTPUT --language L [--model M] [--limit N] [--config P]
+  tprs_audio.py INPUT OUTPUT --language L [--mode dialogue|reading] [--model M] [--limit N] [--config P]
 """
 import argparse
 import hashlib
@@ -73,6 +76,16 @@ def parse_dialogue(text: str) -> list:
     return turns
 
 
+def parse_reading(text: str) -> list:
+    # shortcut: one TTS request per line; a line over the model's character limit fails, so keep paragraphs short.
+    turns = []
+    for line in text.splitlines():
+        body = markers_to_breaks(line)
+        if BREAK_RE.sub("", body).strip():
+            turns.append(("Narrator", body))
+    return turns
+
+
 def select_turns(turns: list, limit) -> list:
     return turns if limit is None else turns[:limit]
 
@@ -92,6 +105,13 @@ def resolve_voices(entry: dict, env) -> dict:
     if missing:
         raise ConfigError(f"missing voice config: {', '.join(missing)}")
     return {"Teacher": teacher, "Learner": learner}
+
+
+def resolve_narrator(entry: dict, env) -> dict:
+    narrator = env.get("NARRATOR_VOICE_ID") or entry.get("narrator_voice_id")
+    if not narrator:
+        raise ConfigError("missing voice config: narrator_voice_id")
+    return {"Narrator": narrator}
 
 
 def tts(text, voice_id, api_key, out_path, model_id, voice_settings,
@@ -126,6 +146,7 @@ def main(argv=None):
     p.add_argument("input")
     p.add_argument("output")
     p.add_argument("--language", required=True)
+    p.add_argument("--mode", choices=["dialogue", "reading"], default="dialogue")
     p.add_argument("--model")
     p.add_argument("--limit", type=int)
     p.add_argument("--config", default=DEFAULT_CONFIG_PATH)
@@ -133,7 +154,7 @@ def main(argv=None):
 
     try:
         entry = load_language_config(args.config, args.language)
-        voices = resolve_voices(entry, os.environ)
+        voices = (resolve_narrator if args.mode == "reading" else resolve_voices)(entry, os.environ)
     except ConfigError as e:
         sys.exit(f"error: {e}")
 
@@ -148,9 +169,10 @@ def main(argv=None):
               "the formatted dialogue was prepared for the default", file=sys.stderr)
 
     with open(args.input, encoding="utf-8") as f:
-        turns = select_turns(parse_dialogue(f.read()), args.limit)
+        parse = parse_reading if args.mode == "reading" else parse_dialogue
+        turns = select_turns(parse(f.read()), args.limit)
     if not turns:
-        sys.exit("error: no Teacher:/Learner: lines found")
+        sys.exit("error: no text lines found" if args.mode == "reading" else "error: no Teacher:/Learner: lines found")
 
     voice_settings = {
         "stability": float(os.environ.get("ELEVENLABS_STABILITY", 0.4)),
