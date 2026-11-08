@@ -5,7 +5,7 @@ The config holds only non-secret settings. The ElevenLabs API key is never
 stored here; it comes from the ELEVENLABS_API_KEY env var.
 
 Usage:
-  tprs_config.py show --language latin [--config PATH]
+  tprs_config.py show --language latin [--mode dialogue|reading] [--config PATH]
   tprs_config.py set  --language latin key=value ... [--config PATH]
 """
 import argparse
@@ -14,7 +14,9 @@ import os
 import sys
 from pathlib import Path
 
-CONFIG_FIELDS = ("teacher_voice_id", "learner_voice_id", "default_model_id")
+CONFIG_FIELDS = ("teacher_voice_id", "learner_voice_id", "narrator_voice_id", "default_model_id")
+DIALOGUE_FIELDS = ("teacher_voice_id", "learner_voice_id", "default_model_id")
+READING_FIELDS = ("narrator_voice_id", "default_model_id")
 DEFAULT_MODEL_ID = "eleven_v4"
 DEFAULT_CONFIG_PATH = str(Path(__file__).resolve().parent.parent / "tprs.config.json")
 
@@ -45,8 +47,8 @@ def load_language_config(path: str, language: str) -> dict:
     return {k: v for k, v in entry.items() if k in CONFIG_FIELDS}
 
 
-def missing_fields(entry: dict) -> list:
-    return [f for f in CONFIG_FIELDS if not entry.get(f)]
+def missing_fields(entry: dict, required=DIALOGUE_FIELDS) -> list:
+    return [f for f in required if not entry.get(f)]
 
 
 def save_language_config(path: str, language: str, values: dict) -> None:
@@ -66,12 +68,14 @@ def main(argv=None):
     p.add_argument("command", choices=["show", "set"])
     p.add_argument("pairs", nargs="*", help="key=value (set only)")
     p.add_argument("--language", required=True)
+    p.add_argument("--mode", choices=["dialogue", "reading"], default="dialogue")
     p.add_argument("--config", default=DEFAULT_CONFIG_PATH)
     args = p.parse_args(argv)
+    required = READING_FIELDS if args.mode == "reading" else DIALOGUE_FIELDS
     try:
         if args.command == "show":
             entry = load_language_config(args.config, args.language)
-            print(json.dumps({"entry": entry, "missing": missing_fields(entry)}, indent=2))
+            print(json.dumps({"entry": entry, "missing": missing_fields(entry, required)}, indent=2))
         else:
             values = dict(pair.split("=", 1) for pair in args.pairs)
             save_language_config(args.config, args.language, values)

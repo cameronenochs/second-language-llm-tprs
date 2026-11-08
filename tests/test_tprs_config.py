@@ -53,5 +53,11 @@ class ConfigTests(unittest.TestCase):
             c.save_language_config(self.path, "latin", {"api_key": "x"})
 
 
+class ReadingFieldsTests(unittest.TestCase):
+    def test_reading_requires_only_narrator_and_model(self):
+        self.assertEqual(c.missing_fields({"teacher_voice_id": "x"}, c.READING_FIELDS),
+                         ["narrator_voice_id", "default_model_id"])
+
+
 if __name__ == "__main__":
     unittest.main()

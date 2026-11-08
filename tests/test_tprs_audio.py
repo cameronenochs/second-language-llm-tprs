@@ -145,5 +145,17 @@ class FinalReviewFixTests(unittest.TestCase):
         self.assertNotIn("[", out)
 
 
+class ReadingModeTests(unittest.TestCase):
+    def test_parse_reading_one_turn_per_line(self):
+        turns = a.parse_reading("Gallia est [pause] omnis.\n\n  \n[pause]\nDivisa est.\n")
+        self.assertEqual(turns, [("Narrator", 'Gallia est <break time="0.5s"/> omnis.'), ("Narrator", "Divisa est.")])
+
+    def test_resolve_narrator(self):
+        self.assertEqual(a.resolve_narrator({"narrator_voice_id": "n1"}, {}), {"Narrator": "n1"})
+        self.assertEqual(a.resolve_narrator({}, {"NARRATOR_VOICE_ID": "e"}), {"Narrator": "e"})
+        with self.assertRaises(c.ConfigError):
+            a.resolve_narrator({}, {})
+
+
 if __name__ == "__main__":
     unittest.main()

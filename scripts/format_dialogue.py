@@ -2,7 +2,9 @@
 """Normalize a Teacher:/Learner: dialogue for the ElevenLabs audio script.
 
 Usage:
-  format_dialogue.py IN OUT [--or-word WORD] [--model MODEL_ID]
+  format_dialogue.py IN OUT [--or-word WORD] [--model MODEL_ID] [--reading]
+
+--reading normalizes every line of a plain narration (no Teacher:/Learner: prefix).
 """
 import argparse
 import re
@@ -42,16 +44,23 @@ def format_dialogue(text: str, allowed_markers: frozenset = DEFAULT_MARKERS, or_
     )
 
 
+def format_reading(text: str, allowed_markers: frozenset = DEFAULT_MARKERS) -> str:
+    text = text.replace("\r\n", "\n")
+    return "\n".join(_format_line(l, allowed_markers, None) if l.strip() else "" for l in text.split("\n"))
+
+
 def main(argv=None):
     p = argparse.ArgumentParser()
     p.add_argument("input")
     p.add_argument("output")
     p.add_argument("--or-word")
     p.add_argument("--model", default="eleven_v4")
+    p.add_argument("--reading", action="store_true")
     args = p.parse_args(argv)
     markers = MODEL_MARKERS.get(args.model, DEFAULT_MARKERS)
     with open(args.input, encoding="utf-8") as f:
-        out = format_dialogue(f.read(), markers, args.or_word)
+        text = f.read()
+    out = format_reading(text, markers) if args.reading else format_dialogue(text, markers, args.or_word)
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(out)
     print(f"wrote {args.output}")

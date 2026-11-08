@@ -23,7 +23,7 @@ class RepoHygieneTests(unittest.TestCase):
     def test_example_config_has_no_secret_fields(self):
         with open(os.path.join(ROOT, "tprs.config.example.json"), encoding="utf-8") as f:
             data = json.load(f)
-        allowed = {"teacher_voice_id", "learner_voice_id", "default_model_id"}
+        allowed = {"teacher_voice_id", "learner_voice_id", "narrator_voice_id", "default_model_id"}
         self.assertEqual(set(data), {"languages"})
         for entry in data["languages"].values():
             self.assertTrue(set(entry) <= allowed)

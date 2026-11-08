@@ -13,6 +13,13 @@ Procedures live in `.agents/skills/`. Run the matching skill. Do not improvise a
 - `generate-dialogue-audio` writes `test-4lines.mp3`, then `dialogue.mp3` only after the user confirms the clip.
 - `tprs-pipeline` runs the five in order. Ask full-auto or approve-each-stage first. The 4-line audio clip still waits for confirmation.
 
+Audiobook pipeline (straight single-voice reading, no expansion):
+
+- `adapt-reading-level` writes `adapted.txt`, only if the user wants a level change.
+- `format-for-narration` writes `reading.elevenlabs.txt`.
+- `generate-reading-audio` writes `test-4lines.mp3`, then `reading.mp3` only after the user confirms the clip.
+- `audiobook-pipeline` runs `clean-source-text` (skipped for reliable text) and the three above in order. Ask full-auto or approve-each-stage first.
+
 ## Output
 
 ```
@@ -22,6 +29,9 @@ output/<source-slug>/<chapter-slug>/
   dialogue.elevenlabs.txt
   test-4lines.mp3
   dialogue.mp3
+  adapted.txt            (audiobook, optional)
+  reading.elevenlabs.txt (audiobook)
+  reading.mp3            (audiobook)
 ```
 
 ## Secrets
