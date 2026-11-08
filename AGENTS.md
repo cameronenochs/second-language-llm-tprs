@@ -40,4 +40,4 @@ Read `ELEVENLABS_API_KEY` from the environment only. Never ask for it in chat, a
 
 ## Tools
 
-Python 3 stdlib only. `ffmpeg` must be on `PATH`. Voice IDs live in gitignored `tprs.config.json` (see `tprs.config.example.json`).
+Python 3 stdlib only, except `app/` (Node 22 web player). `ffmpeg` must be on `PATH`. Voice IDs live in gitignored `tprs.config.json` (see `tprs.config.example.json`).

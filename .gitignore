@@ -10,3 +10,13 @@ __pycache__/
 *.pem
 *.key
 credentials.json
+
+# app/ (Node web player)
+app/node_modules/
+app/.vercel/
+app/.output/
+app/.nitro/
+app/dist/
+# Generated course media and manifests (scripts/export_course.py)
+app/public/courses/
+app/src/lesson/content/*.json

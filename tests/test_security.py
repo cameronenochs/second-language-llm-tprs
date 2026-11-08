@@ -44,7 +44,7 @@ class RepoHygieneTests(unittest.TestCase):
         for dirpath, dirnames, filenames in os.walk(ROOT):
             dirnames[:] = [
                 d for d in dirnames
-                if d not in {".git", "worktrees", "__pycache__", "output", "docs"}
+                if d not in {".git", "worktrees", "__pycache__", "output", "docs", "node_modules", ".vercel"}
             ]
             if os.path.basename(dirpath) == "tests":
                 continue
@@ -87,6 +87,8 @@ class WorkflowSecurityTests(unittest.TestCase):
         self.assertIn("name: tests", ci)
         self.assertIn("name: gitleaks", ci)
         self.assertIn('python -m unittest discover -s tests -v', ci)
+        self.assertIn("working-directory: app", ci)
+        self.assertIn("needs: [unit, app]", ci)
         codeql = read(os.path.join(ROOT, ".github", "workflows", "codeql.yml"))
         self.assertIn("name: codeql", codeql)
         self.assertIn("queries: security-extended", codeql)

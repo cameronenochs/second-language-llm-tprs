@@ -31,15 +31,39 @@ jobs:
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
+  app:
+    name: app
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      # The lockfile is written by npm 11. Node 22 ships npm 10, which rejects it.
+      - run: npm install -g npm@11.19.0
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+
   tests:
     name: tests
-    needs: unit
+    needs: [unit, app]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Require every unit-test job to pass
-        run: test "${{ needs.unit.result }}" = "success"
+        run: |
+          test "${{ needs.unit.result }}" = "success"
+          test "${{ needs.app.result }}" = "success"
 
   gitleaks:
     name: gitleaks
