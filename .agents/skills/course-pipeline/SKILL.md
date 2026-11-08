@@ -5,7 +5,7 @@ description: Use when building a Comprehension Method picture-and-audio course l
 
 # Course Pipeline
 
-Orchestrates one lesson of a Winitz/Buth-style picture course. Assumes the working directory is the repo root.
+Orchestrates one lesson of a Comprehension Approach picture course. Assumes the working directory is the repo root.
 
 ## First question
 

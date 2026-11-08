@@ -38,7 +38,7 @@ function LevelsPage() {
         ))}
       </ul>
       <p className="mt-auto pt-16 font-sans text-sm text-muted">
-        In the comprehension tradition of Harris Winitz.
+        In the tradition of the Comprehension Approach.
       </p>
     </main>
   );

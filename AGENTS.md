@@ -20,7 +20,7 @@ Audiobook pipeline (straight single-voice reading, no expansion):
 - `generate-reading-audio` writes `test-4lines.mp3`, then `reading.mp3` only after the user confirms the clip.
 - `audiobook-pipeline` runs `clean-source-text` (skipped for reliable text) and the three above in order. Ask full-auto or approve-each-stage first.
 
-Course pipeline (Winitz/Buth picture course, one sentence per picture, built from `../Course-Builder-Kit` or `$COURSE_BUILDER_KIT`):
+Course pipeline (Comprehension Approach picture course, one sentence per picture, built from `../Course-Builder-Kit` or `$COURSE_BUILDER_KIT`):
 
 - `write-course-script` writes `script.jsonl`, `plan.md`, `lexicon.csv`, `deviations.md`, gated by the kit's `check_course.py`.
 - `proofread-course-script` edits `script.jsonl` in place.

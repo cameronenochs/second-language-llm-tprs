@@ -5,7 +5,7 @@ description: Use when a Comprehension Method picture course lesson needs its tar
 
 # Write Course Script
 
-Write one lesson of a Winitz/Buth-style picture course: one sentence per picture, six items per page. Assumes the working directory is the repo root. Works for any language the model knows well.
+Write one lesson of a Comprehension Approach picture course: one sentence per picture, six items per page. Assumes the working directory is the repo root. Works for any language the model knows well.
 
 ## Inputs
 
