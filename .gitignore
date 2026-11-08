@@ -20,3 +20,6 @@ app/dist/
 # Generated course media and manifests (scripts/export_course.py)
 app/public/courses/
 app/src/lesson/content/*.json
+
+# Core vocabulary lists (fetched by scripts/core_vocab.py; source states no licence)
+data/core-vocab/

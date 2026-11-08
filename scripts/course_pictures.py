@@ -83,7 +83,9 @@ def sheet_prompt(style: str, scenes: list) -> str:
     lines = [f"{i}. {s}" for i, s in enumerate(scenes, 1)]
     lines += [f"{i}. Leave this panel empty white." for i in range(len(scenes) + 1, PER_SHEET + 1)]
     return (f"{style.strip()}\n\nDraw a grid of 6 equal panels: 3 across, 2 down, separated by wide white "
-            "gutters. No borders, no text, no numbers, no speech bubbles. Panels in reading order, "
+            "gutters. All six panels are exactly the same size: the columns split the width into equal thirds "
+            "and the rows split the height into equal halves. A tall subject is drawn smaller, never given a "
+            "taller panel. No borders, no text, no numbers, no speech bubbles. Panels in reading order, "
             "top row left to right, then bottom row:\n" + "\n".join(lines))
 
 

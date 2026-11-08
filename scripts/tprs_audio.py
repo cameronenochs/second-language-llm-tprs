@@ -119,7 +119,8 @@ def join_clips(clips: list, output: str):
         concat_list = os.path.join(tmp, "list.txt")
         with open(concat_list, "w") as list_f:
             for i, clip in enumerate(clips):
-                list_f.write(f"file '{clip}'\n")
+                # ffmpeg resolves relative paths against the list file's folder, so pass absolute ones.
+                list_f.write(f"file '{os.path.abspath(clip)}'\n")
                 if i < len(clips) - 1:
                     list_f.write(f"file '{silence}'\n")
         run_ffmpeg(["-y", "-f", "concat", "-safe", "0", "-i", concat_list, "-c", "copy", output])
