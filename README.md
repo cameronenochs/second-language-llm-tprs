@@ -1,48 +1,92 @@
-# Second Language LLM TPRS Generator
+# Hear the chapter you are studying
 
-This set of skills and tools allows you to turn a target language resource (a textbook chapter, a magazine article, etc.) into a spoken TPRS (Teaching Proficiency through Reading and Storytelling) circling dialogue. It produces a finished mp3.
+![Listen, in Spanish, Arabic, Russian, Hindi, Chinese, and Korean](docs/header.png)
 
-## Prerequisites
+You already have the chapter. This turns it into a conversation you can listen to.
 
-- Python 3 (stdlib only, no pip installs)
-- `ffmpeg` on PATH
-- A subscription to Eleven Labs and an `ELEVENLABS_API_KEY` set as a variable in your shell.
-- An AI coding agent that reads `AGENTS.md` and skill folders: Claude Code, Codex, Gemini CLI, or Grok.
+## 1. The problem
 
-## Getting started
+You want a new language to make sense when someone speaks it. The chapter in front of you has this week's story and the words that carry it. Reading the page once leaves those words on the page.
 
-There is no input folder and no command to run. The skills are instructions for an AI agent, so you drive the pipeline by talking to the agent from the repo root.
+Understanding grows when you hear the same ideas spoken, simply, more than once. A teacher asks a short question. You answer. They ask again from another angle. The new words come back until your ear knows them. Teachers call this TPRS: Teaching Proficiency through Reading and Storytelling. Asking about one idea several ways is called circling.
 
-1. Fork and clone the repo, then `cd` into it.
-2. Export your key in the shell you will start the agent from: `export ELEVENLABS_API_KEY=...`. Do not paste the key into the chat.
-3. Pick two ElevenLabs voices (teacher and learner) and note their voice IDs. You can put them in `tprs.config.json` now (see [Config](#config)), or give them to the agent when it asks.
-4. Get your chapter as text. Either copy it so you can paste it, or save it as a `.txt` file. Put the file outside the repo or under `output/` (gitignored), so it is not committed. A PDF also works if your agent can read PDFs (Claude Code can). For a scanned PDF with no text layer, run OCR first.
-5. Start the agent in the repo root (for example `claude`, `codex`, or `gemini`).
-6. Ask it to run the pipeline, for example:
+A class might circle a story once, out loud, and then move on. Building that same spoken practice for the exact chapter on your desk, matched to how far along you are, usually means writing the questions and recording them yourself.
+
+## 2. The solution
+
+Hand over the chapter you are already reading. Get back a short spoken dialogue.
+
+One voice is the teacher. One voice is the learner. They tell the story from your chapter in short lines, then circle it: the same facts return as easy choices, so you can follow when a word is still new. The result is one audio file. Play it on a walk, in the car, or with the book open beside you.
+
+Any language the chapter is written in can be the language you hear.
+
+## 3. How this gets you there
+
+You talk to an AI assistant the way you would ask a person for help. Claude, Codex, Gemini, and Grok can all follow the steps in this project. You give it the chapter. It does five things:
+
+1. Cleans up the text, including a messy scan.
+2. Writes the teacher-and-learner dialogue at your level, from brand new to advanced.
+3. Checks the language, and checks that the questions really circle.
+4. Prepares the script so it can be spoken aloud.
+5. Records two voices and saves an mp3.
+
+You hear a few lines before the full recording. If the voices sound right, the rest is made. That sample is there so you can pick different voices while the recording is still short.
+
+You answer a few plain questions along the way: go straight through, or pause so you can read each step; how far along you are; and the word your language uses for "or" (Latin uses *an*).
+
+When it finishes, you have a folder with the cleaned chapter, the written dialogue, and the audio.
+
+## 4. Technical details
+
+The sections above are the whole idea. Everything below is how to set it up, and how the pieces fit if you want to change them.
+
+The project name is Second Language LLM TPRS. The steps are instructions an assistant reads from this repo. Shared rules live in `AGENTS.md`.
+
+### What you need
+
+- Python 3. The scripts use the standard library only.
+- `ffmpeg` on your `PATH`.
+- An ElevenLabs subscription. Set `ELEVENLABS_API_KEY` in the shell you start the assistant from. Keep the key out of the chat. If it shows up there, rotate it.
+- An assistant that reads `AGENTS.md` and skill folders: Claude Code, Codex, Gemini CLI, or Grok.
+
+### Getting started
+
+You bring the chapter: paste it into the chat, or point the assistant at a text file.
+
+1. Fork and clone the repo, then open a terminal in the project folder.
+2. In that same terminal, set your key: `export ELEVENLABS_API_KEY=...`
+3. Pick two ElevenLabs voices, teacher and learner, and note their voice IDs. Save them in `tprs.config.json` (see [Config](#config)), or give them to the assistant when it asks.
+4. Have the chapter as text you can paste, or as a `.txt` file outside the repo or under `output/` (that folder is gitignored). A PDF works when your assistant can read PDFs. A scanned PDF needs OCR first, so the words are real text.
+5. Start the assistant in the project folder.
+6. Ask it to run the pipeline. For example:
 
    > Run the tprs-pipeline on ~/Downloads/chapter3.txt. Latin, source slug `wheelock`, chapter slug `ch03-taberna`.
 
-7. Answer its setup questions: full auto or approve each stage, the ACTFL level, and the language's word for "or" (for example `an` in Latin).
-8. Listen to `test-4lines.mp3` when the agent stops. Confirm, and it renders `dialogue.mp3`. The test clip exists so you can check the voices before you pay for the full render.
+   The source slug is a short name for the book. The chapter slug is a short name for this chapter. They become the folder names.
 
-All files land in `output/<source-slug>/<chapter-slug>/`. To resume later, ask the agent to run the next stage on that folder. You can also run any single stage by name, for example "proofread `output/wheelock/ch03-taberna/dialogue.txt`".
+7. Answer the setup questions: full auto or approve each stage, your [ACTFL](https://www.actfl.org/educator-resources/actfl-proficiency-guidelines) level (Novice, Intermediate, or Advanced, and Low / Mid / High inside those), and the language's word for "or".
+8. Listen to `test-4lines.mp3` when the assistant stops. Confirm, and it writes `dialogue.mp3`. Full-auto mode still waits on this clip, because the full recording spends ElevenLabs credits.
 
-## Skills
+Files land in `output/<source-slug>/<chapter-slug>/`. To continue later, ask the assistant to run the next stage on that folder. You can also name one stage, for example: proofread `output/wheelock/ch03-taberna/dialogue.txt`.
 
-Project skills live in `.agents/skills/`. Codex, Grok, and Gemini CLI load that directory. Claude Code loads the same folders through the `.claude/skills` symlink. Shared rules are in `AGENTS.md`.
+### Skills
 
-- `clean-source-text`: clean OCR noise from pasted text into `original.txt`.
-- `tprs-expand`: expand the original into a Teacher/Learner circling dialogue at a chosen ACTFL level.
-- `proofread-dialogue`: check grammar and circling rules, fixing the dialogue in place.
-- `format-for-elevenlabs`: normalize delivery markers into `dialogue.elevenlabs.txt`.
-- `generate-dialogue-audio`: render a 4-line test clip, then (after your confirmation) the full mp3.
-- `tprs-pipeline`: run all five in order, in full-auto or approve-each-stage mode. The audio test clip always waits for you.
+Project skills live in `.agents/skills/`. Codex, Grok, and Gemini CLI load that directory. Claude Code loads the same folders through the `.claude/skills` symlink.
 
-## Config
+| Skill | What it writes |
+| --- | --- |
+| `clean-source-text` | `original.txt` |
+| `tprs-expand` | `dialogue.txt`, at the ACTFL level you chose |
+| `proofread-dialogue` | edits `dialogue.txt` in place |
+| `format-for-elevenlabs` | `dialogue.elevenlabs.txt` |
+| `generate-dialogue-audio` | `test-4lines.mp3`, then `dialogue.mp3` after you confirm |
+| `tprs-pipeline` | runs the five in order |
 
-Copy `tprs.config.example.json` to `tprs.config.json` (gitignored) and fill in voice IDs per language, or let `generate-dialogue-audio` ask and save them. The file holds voice IDs and default model only, never the API key.
+### Config
 
-## Output layout
+Copy `tprs.config.example.json` to `tprs.config.json` (gitignored). Fill in voice IDs per language, or let the audio step ask and save them. The file holds voice IDs and the default voice model (`eleven_v4`). The API key stays in the environment.
+
+### Output
 
 ```
 output/<source-slug>/<chapter-slug>/
@@ -53,9 +97,7 @@ output/<source-slug>/<chapter-slug>/
   dialogue.mp3
 ```
 
-`output/` is gitignored.
-
-## Scripts
+### Scripts
 
 ```bash
 python3 scripts/tprs_config.py show --language latin
@@ -63,17 +105,17 @@ python3 scripts/format_dialogue.py IN OUT --or-word an
 python3 scripts/tprs_audio.py IN.txt OUT.mp3 --language latin --limit 4
 ```
 
-## Tests
+### Tests
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-Pull requests into `main` must pass the `tests`, `gitleaks`, `codeql`, and `dependency-review` checks. Report vulnerabilities through [Security Advisories](https://github.com/cameronenochs/second-language-llm-tprs/security/advisories/new), not public issues.
+Pull requests into `main` must pass the `tests`, `gitleaks`, `codeql`, and `dependency-review` checks. Report vulnerabilities through [Security Advisories](https://github.com/cameronenochs/second-language-llm-tprs/security/advisories/new).
 
-## Not built yet
+### Later
 
-Cross-lesson vocabulary and grammar tracking (so later chapters can circle on earlier vocabulary) is a deferred v2 idea.
+Remembering words and grammar across chapters, so a later lesson can circle what an earlier one taught, is left for a later version.
 
 ## License
 
