@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #e8edf2;
+  --color-ink: #1b2430;
+  --color-muted: #526274;
+  --color-plate: #fbfcfd;
+  --color-rule: #d5dee8;
+  --color-accent: #1d5fbf;
+  --color-accent-deep: #164e9c;
+  --color-accent-ink: #f5f8fc;
+  --color-mark: #1b2430;
+  --color-mark-ink: #f5f8fc;
+  --font-display: "Outfit", "Source Sans 3", "Segoe UI", sans-serif;
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+  --radius-plate: 0.875rem;
+}
+
+[data-theme="dark"] {
+  --color-paper: #12171e;
+  --color-ink: #e7eef5;
+  --color-muted: #9aabbc;
+  --color-plate: #1b2430;
+  --color-rule: #2e3b4a;
+  --color-accent: #6ea2e8;
+  --color-accent-deep: #84b4f0;
+  --color-accent-ink: #0e1722;
+  --color-mark: #314052;
+  --color-mark-ink: #e7eef5;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+.plate {
+  background: var(--color-plate);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-plate);
+  box-shadow:
+    0 1px 2px rgb(18 23 30 / 6%),
+    0 16px 32px -24px rgb(18 23 30 / 28%);
+}
+
+[data-theme="dark"] .plate {
+  box-shadow: none;
+}
+
+.plate-in {
+  animation: plate-in 280ms ease;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 14px;
+}
+
+.bars span {
+  width: 3px;
+  height: 35%;
+  border-radius: 99px;
+  background: var(--color-accent);
+}
+
+.bars.is-on span {
+  animation: bar 0.9s ease-in-out infinite;
+}
+
+.bars.is-on span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.bars.is-on span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+@keyframes plate-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bar {
+  0%,
+  100% {
+    height: 30%;
+  }
+  50% {
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-in,
+  .bars.is-on span {
+    animation: none;
+  }
+}

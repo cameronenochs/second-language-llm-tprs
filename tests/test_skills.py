@@ -53,7 +53,30 @@ class StageGateTests(unittest.TestCase):
             "format-for-elevenlabs", "generate-dialogue-audio", "tprs-pipeline",
             "adapt-reading-level", "format-for-narration", "generate-reading-audio",
             "audiobook-pipeline",
+            "write-course-script", "proofread-course-script", "design-course-pictures",
+            "generate-course-images", "generate-course-audio", "export-course-to-app",
+            "course-pipeline",
         })
+
+    def test_course_audio_skill_gates(self):
+        text = skill_text("generate-course-audio")
+        for needle in ("ELEVENLABS_API_KEY", "--limit 4", "test-4lines.mp3", "confirm", "--mode course"):
+            self.assertIn(needle, text)
+
+    def test_course_images_skill_gates(self):
+        text = skill_text("generate-course-images")
+        for needle in ("GEMINI_API_KEY", "XAI_API_KEY", "manual", "sheet-01.png", "confirm", "--rest"):
+            self.assertIn(needle, text)
+
+    def test_course_script_skill_runs_checker(self):
+        self.assertIn("check_course.py", skill_text("write-course-script"))
+
+    def test_course_pipeline_gates(self):
+        text = skill_text("course-pipeline")
+        self.assertIn("Do I go full auto, or do you want to approve each stage?", text)
+        for stage in ("write-course-script", "proofread-course-script", "design-course-pictures",
+                      "generate-course-images", "generate-course-audio", "export-course-to-app"):
+            self.assertIn(stage, text)
 
     def test_reading_audio_skill_gates(self):
         text = skill_text("generate-reading-audio")

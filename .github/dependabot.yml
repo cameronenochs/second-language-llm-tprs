@@ -10,3 +10,9 @@ updates:
       actions:
         patterns:
           - "*"
+  - package-ecosystem: npm
+    directory: /app
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5

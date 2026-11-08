@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Láminas">
+  <rect width="32" height="32" rx="6" fill="#E8EDF2"/>
+  <path d="M7.5 6.5h6.2V21H25v5.2H7.5V6.5z" fill="#1B2430"/>
+  <path d="M14.4 3.6l2.4 4.2" stroke="#1D5FBF" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

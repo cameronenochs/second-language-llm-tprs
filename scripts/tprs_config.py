@@ -5,7 +5,7 @@ The config holds only non-secret settings. The ElevenLabs API key is never
 stored here; it comes from the ELEVENLABS_API_KEY env var.
 
 Usage:
-  tprs_config.py show --language latin [--mode dialogue|reading] [--config PATH]
+  tprs_config.py show --language latin [--mode dialogue|reading|course] [--config PATH]
   tprs_config.py set  --language latin key=value ... [--config PATH]
 """
 import argparse
@@ -68,10 +68,10 @@ def main(argv=None):
     p.add_argument("command", choices=["show", "set"])
     p.add_argument("pairs", nargs="*", help="key=value (set only)")
     p.add_argument("--language", required=True)
-    p.add_argument("--mode", choices=["dialogue", "reading"], default="dialogue")
+    p.add_argument("--mode", choices=["dialogue", "reading", "course"], default="dialogue")
     p.add_argument("--config", default=DEFAULT_CONFIG_PATH)
     args = p.parse_args(argv)
-    required = READING_FIELDS if args.mode == "reading" else DIALOGUE_FIELDS
+    required = DIALOGUE_FIELDS if args.mode == "dialogue" else READING_FIELDS
     try:
         if args.command == "show":
             entry = load_language_config(args.config, args.language)
