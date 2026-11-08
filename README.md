@@ -34,6 +34,8 @@ One voice is the teacher. One voice is the learner. They tell the story from you
 
 Any language the chapter is written in can be the language you hear.
 
+If you want the chapter itself instead, there is a second path: an audiobook. One voice reads your text as written. Nothing is expanded or circled. You can ask for the text to be simplified to a level first, but only if you want that.
+
 ## 3. How this gets you there
 
 You talk to an AI assistant the way you would ask a person for help. Claude, Codex, Gemini, and Grok can all follow the steps in this project. You give it the chapter. It does five things:
@@ -49,6 +51,8 @@ You hear a few lines before the full recording. If the voices sound right, the r
 You answer a few plain questions along the way: go straight through, or pause so you can read each step; how far along you are; and the word your language uses for "or" (Latin uses *an*).
 
 When it finishes, you have a folder with the cleaned chapter, the written dialogue, and the audio.
+
+The audiobook path is shorter. It cleans the text (skipped if it is already reliable), optionally simplifies it to a level you pick, adds pauses for a natural read, and records one narrator voice. The same rule applies: you hear a few lines first, and the full recording waits for your yes. Pick the voice model if you like; it defaults to `eleven_v4`.
 
 ## 4. Technical details
 
@@ -69,17 +73,21 @@ You bring the chapter: paste it into the chat, or point the assistant at a text 
 
 1. Fork and clone the repo, then open a terminal in the project folder.
 2. In that same terminal, set your key: `export ELEVENLABS_API_KEY=...`
-3. Pick two ElevenLabs voices, teacher and learner, and note their voice IDs. Save them in `tprs.config.json` (see [Config](#config)), or give them to the assistant when it asks.
+3. Pick two ElevenLabs voices, teacher and learner, and note their voice IDs. For the audiobook, pick one narrator voice. Save them in `tprs.config.json` (see [Config](#config)), or give them to the assistant when it asks.
 4. Have the chapter as text you can paste, or as a `.txt` file outside the repo or under `output/` (that folder is gitignored). A PDF works when your assistant can read PDFs. A scanned PDF needs OCR first, so the words are real text.
 5. Start the assistant in the project folder.
 6. Ask it to run the pipeline. For example:
 
    > Run the tprs-pipeline on ~/Downloads/chapter3.txt. Latin, source slug `wheelock`, chapter slug `ch03-taberna`.
 
+   For a straight reading, ask for the audiobook instead:
+
+   > Run the audiobook-pipeline on ~/Downloads/chapter3.txt. Latin, source slug `wheelock`, chapter slug `ch03-taberna`.
+
    The source slug is a short name for the book. The chapter slug is a short name for this chapter. They become the folder names.
 
-7. Answer the setup questions: full auto or approve each stage, your [ACTFL](https://www.actfl.org/educator-resources/actfl-proficiency-guidelines) level (Novice, Intermediate, or Advanced, and Low / Mid / High inside those), and the language's word for "or".
-8. Listen to `test-4lines.mp3` when the assistant stops. Confirm, and it writes `dialogue.mp3`. Full-auto mode still waits on this clip, because the full recording spends ElevenLabs credits.
+7. Answer the setup questions: full auto or approve each stage, your [ACTFL](https://www.actfl.org/educator-resources/actfl-proficiency-guidelines) level (Novice, Intermediate, or Advanced, and Low / Mid / High inside those), and the language's word for "or". (The audiobook asks whether to simplify the text, and to which level, instead of the "or" word.)
+8. Listen to `test-4lines.mp3` when the assistant stops. Confirm, and it writes `dialogue.mp3` (`reading.mp3` for the audiobook). Full-auto mode still waits on this clip, because the full recording spends ElevenLabs credits.
 
 Files land in `output/<source-slug>/<chapter-slug>/`. To continue later, ask the assistant to run the next stage on that folder. You can also name one stage, for example: proofread `output/wheelock/ch03-taberna/dialogue.txt`.
 
@@ -124,7 +132,12 @@ output/<source-slug>/<chapter-slug>/
 python3 scripts/tprs_config.py show --language latin
 python3 scripts/format_dialogue.py IN OUT --or-word an
 python3 scripts/tprs_audio.py IN.txt OUT.mp3 --language latin --limit 4
+python3 scripts/tprs_config.py show --language latin --mode reading
+python3 scripts/format_dialogue.py IN OUT --reading
+python3 scripts/tprs_audio.py IN.txt OUT.mp3 --language latin --mode reading --limit 4
 ```
+
+The audiobook sends one request per line, so keep paragraphs short. A line over the model's character limit fails.
 
 ### Tests
 
