@@ -25,7 +25,7 @@ For each item, find violations and fix them:
 6. **Teacher confirms first.** After a correct Learner answer, the Teacher confirms (for example `Ita!`) before restating the fact.
 7. **Full-verb answers.** Learner answers are full-verb phrases, not bare nouns.
 8. **Natural fillers.** Fillers, recognition tags (`Novi!`), and clarification requests (`Non intellego`) feel natural. Flag and vary runs of the same filler; each clarification request must sit at a genuinely hard spot and be followed by a simpler Teacher re-explanation.
-9. **Level consistency.** If the ACTFL level is known, sentence length and grammar match `.claude/skills/tprs-expand/actfl-levels.md`.
+9. **Level consistency.** If the ACTFL level is known, sentence length and grammar match `.agents/skills/tprs-expand/actfl-levels.md`.
 
 ## Limits
 

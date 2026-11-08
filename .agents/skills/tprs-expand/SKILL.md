@@ -14,7 +14,7 @@ Rewrite `original.txt` as a spoken TPRS circling dialogue in the source language
 
 ## First action
 
-Ask the user which ACTFL level to target (Novice Low/Mid/High, Intermediate Low/Mid/High). Do not write anything before the answer. Then read `.claude/skills/tprs-expand/actfl-levels.md` and apply that row to sentence length, grammar, vocabulary load, question types, and restatement.
+Ask the user which ACTFL level to target (Novice Low/Mid/High, Intermediate Low/Mid/High). Do not write anything before the answer. Then read `actfl-levels.md` beside this skill and apply that row to sentence length, grammar, vocabulary load, question types, and restatement.
 
 ## Requirements
 

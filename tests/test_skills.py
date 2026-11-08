@@ -4,7 +4,7 @@ import re
 import unittest
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-SKILL_FILES = sorted(glob.glob(os.path.join(ROOT, ".claude", "skills", "*", "SKILL.md")))
+SKILL_FILES = sorted(glob.glob(os.path.join(ROOT, ".agents", "skills", "*", "SKILL.md")))
 
 
 def read(path):
@@ -21,6 +21,14 @@ class SkillLintTests(unittest.TestCase):
     def test_skills_exist(self):
         self.assertTrue(SKILL_FILES, "no skills found")
 
+    def test_claude_skills_symlink(self):
+        link = os.path.join(ROOT, ".claude", "skills")
+        self.assertTrue(os.path.islink(link), link)
+        self.assertEqual(
+            os.path.realpath(link),
+            os.path.realpath(os.path.join(ROOT, ".agents", "skills")),
+        )
+
     def test_frontmatter_matches_directory(self):
         for path in SKILL_FILES:
             fm = frontmatter(read(path))
@@ -34,7 +42,7 @@ class SkillLintTests(unittest.TestCase):
 
 
 def skill_text(name):
-    return read(os.path.join(ROOT, ".claude", "skills", name, "SKILL.md"))
+    return read(os.path.join(ROOT, ".agents", "skills", name, "SKILL.md"))
 
 
 class StageGateTests(unittest.TestCase):

@@ -10,7 +10,7 @@ This set of skills and tools allows you to turn a target language resource (a te
 
 ## Skills
 
-Project skills live in `.claude/skills/`; open this repo in Claude Code to use them.
+Project skills live in `.agents/skills/`. Codex, Grok, and Gemini CLI load that directory. Claude Code loads the same folders through the `.claude/skills` symlink. Shared rules are in `AGENTS.md`.
 
 - `clean-source-text`: clean OCR noise from pasted text into `original.txt`.
 - `tprs-expand`: expand the original into a Teacher/Learner circling dialogue at a chosen ACTFL level.

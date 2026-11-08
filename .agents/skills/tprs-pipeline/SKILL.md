@@ -21,7 +21,7 @@ Before anything else, ask the user, verbatim:
 
 ## Stages
 
-Invoke each with the `Skill` tool, passing the chapter directory:
+Run these skills in order. Pass the chapter directory to each one:
 
 1. `clean-source-text` produces `original.txt`.
 2. `tprs-expand` produces `dialogue.txt` (it asks for the ACTFL level).
