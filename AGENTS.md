@@ -22,7 +22,7 @@ Audiobook pipeline (straight single-voice reading, no expansion):
 
 Course pipeline (Comprehension Approach picture course, one sentence per picture, built from `../Course-Builder-Kit` or `$COURSE_BUILDER_KIT`):
 
-- `write-course-script` writes `script.jsonl`, `plan.md`, `lexicon.csv`, `deviations.md`, gated by the kit's `check_course.py`.
+- `write-course-script` writes `script.jsonl`, `plan.md`, `lexicon.csv`, `deviations.md`, gated by the kit's `check_course.py` and, where a core frequency list exists, `scripts/core_vocab.py check`.
 - `proofread-course-script` edits `script.jsonl` in place.
 - `design-course-pictures` writes `pictures.json` and `style.md`.
 - `generate-course-images` writes `cast.png` and `sheets/sheet-01.png`, then the other sheets only after the user confirms sheet 1, then cuts `pictures/`. Gemini if `GEMINI_API_KEY`, else Grok if `XAI_API_KEY`, else manual paste-in.
