@@ -1,12 +1,12 @@
-# second-language-llm-tprs
+# Second Language LLM TPRS Generator
 
-Turn a source-language textbook chapter into a spoken TPRS (Teaching Proficiency through Reading and Storytelling) circling dialogue, as a finished mp3. Built as Claude Code skills plus small stdlib Python scripts.
+This set of skills and tools allows you to turn a target language resource (a textbook chapter, a magazine article, etc.) into a spoken TPRS (Teaching Proficiency through Reading and Storytelling) circling dialogue. It produces a finished mp3.
 
 ## Prerequisites
 
 - Python 3 (stdlib only, no pip installs)
 - `ffmpeg` on PATH
-- `ELEVENLABS_API_KEY` exported in your own shell. It is read from the environment at call time and never written to any file.
+- A subscription to Eleven Labs and an `ELEVENLABS_API_KEY` set as a variable in your shell.
 
 ## Skills
 
