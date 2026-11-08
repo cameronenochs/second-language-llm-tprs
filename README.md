@@ -4,7 +4,7 @@
 
 Fluency takes lots and lots of meaningful, interesting communication. You listen and watch. Then, when you are ready, you mimic. Then you improvise, with more skill and less guesswork.
 
-I started this project because the ancient languages I study have very little of that. For Latin, I scraped the internet and found 460 hours of spoken audio. I did not need more grammar. I needed more *Hebdomada Papae* at my level, and *Hebdomada* was past it. These skills make that kind of listening from the chapter you already have.
+I started this project because the ancient languages I study have very little of that. For Latin, I scraped the internet and found 460 hours of spoken audio. I did not need more grammar. I needed more *Hebdomada Papae* at my level, and *Hebdomada* was past it. These skills make it so you can take the transcripts of _Hebdomada_ and create a simpler dialogue or repot, one that's at your level. Or take the current of _LLPSI_ that you're on and create engaging conversation to listen to, whether to prime yourself or to reinforce and expand what you've learned in that chapter.
 
 I am building this for ancient languages. The same steps work for modern ones.
 
