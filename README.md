@@ -7,6 +7,25 @@ This set of skills and tools allows you to turn a target language resource (a te
 - Python 3 (stdlib only, no pip installs)
 - `ffmpeg` on PATH
 - A subscription to Eleven Labs and an `ELEVENLABS_API_KEY` set as a variable in your shell.
+- An AI coding agent that reads `AGENTS.md` and skill folders: Claude Code, Codex, Gemini CLI, or Grok.
+
+## Getting started
+
+There is no input folder and no command to run. The skills are instructions for an AI agent, so you drive the pipeline by talking to the agent from the repo root.
+
+1. Fork and clone the repo, then `cd` into it.
+2. Export your key in the shell you will start the agent from: `export ELEVENLABS_API_KEY=...`. Do not paste the key into the chat.
+3. Pick two ElevenLabs voices (teacher and learner) and note their voice IDs. You can put them in `tprs.config.json` now (see [Config](#config)), or give them to the agent when it asks.
+4. Get your chapter as text. Either copy it so you can paste it, or save it as a `.txt` file. Put the file outside the repo or under `output/` (gitignored), so it is not committed. A PDF also works if your agent can read PDFs (Claude Code can). For a scanned PDF with no text layer, run OCR first.
+5. Start the agent in the repo root (for example `claude`, `codex`, or `gemini`).
+6. Ask it to run the pipeline, for example:
+
+   > Run the tprs-pipeline on ~/Downloads/chapter3.txt. Latin, source slug `wheelock`, chapter slug `ch03-taberna`.
+
+7. Answer its setup questions: full auto or approve each stage, the ACTFL level, and the language's word for "or" (for example `an` in Latin).
+8. Listen to `test-4lines.mp3` when the agent stops. Confirm, and it renders `dialogue.mp3`. The test clip exists so you can check the voices before you pay for the full render.
+
+All files land in `output/<source-slug>/<chapter-slug>/`. To resume later, ask the agent to run the next stage on that folder. You can also run any single stage by name, for example "proofread `output/wheelock/ch03-taberna/dialogue.txt`".
 
 ## Skills
 
