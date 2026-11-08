@@ -20,6 +20,16 @@ Audiobook pipeline (straight single-voice reading, no expansion):
 - `generate-reading-audio` writes `test-4lines.mp3`, then `reading.mp3` only after the user confirms the clip.
 - `audiobook-pipeline` runs `clean-source-text` (skipped for reliable text) and the three above in order. Ask full-auto or approve-each-stage first.
 
+Course pipeline (Winitz/Buth picture course, one sentence per picture, built from `../Course-Builder-Kit` or `$COURSE_BUILDER_KIT`):
+
+- `write-course-script` writes `script.jsonl`, `plan.md`, `lexicon.csv`, `deviations.md`, gated by the kit's `check_course.py`.
+- `proofread-course-script` edits `script.jsonl` in place.
+- `design-course-pictures` writes `pictures.json` and `style.md`.
+- `generate-course-images` writes `cast.png` and `sheets/sheet-01.png`, then the other sheets only after the user confirms sheet 1, then cuts `pictures/`. Gemini if `GEMINI_API_KEY`, else Grok if `XAI_API_KEY`, else manual paste-in.
+- `generate-course-audio` writes `test-4lines.mp3`, then `audio/` only after the user confirms the clip.
+- `export-course-to-app` copies the lesson into `app/` (the web player).
+- `course-pipeline` runs the six in order. Ask full-auto or approve-each-stage first. Sheet 1 and the 4-line clip still wait for confirmation.
+
 ## Output
 
 ```
@@ -32,11 +42,19 @@ output/<source-slug>/<chapter-slug>/
   adapted.txt            (audiobook, optional)
   reading.elevenlabs.txt (audiobook)
   reading.mp3            (audiobook)
+
+output/course-<language>/L<level>-<NN>/
+  script.jsonl plan.md lexicon.csv deviations.md
+  pictures.json style.md cast.png
+  sheets/sheet-NN.png sheets/prompts.md
+  pictures/<picture-id>.png
+  audio/<hash>.mp3 audio/index.json
+  test-4lines.mp3
 ```
 
 ## Secrets
 
-Read `ELEVENLABS_API_KEY` from the environment only. Never ask for it in chat, and never write it into `tprs.config.json` or the repo. If a key appears in chat, tell the user to rotate it.
+Read `ELEVENLABS_API_KEY`, `GEMINI_API_KEY`, and `XAI_API_KEY` from the environment only. Never ask for it in chat, and never write it into `tprs.config.json` or the repo. If a key appears in chat, tell the user to rotate it.
 
 ## Tools
 

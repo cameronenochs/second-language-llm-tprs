@@ -107,6 +107,15 @@ Project skills live in `.agents/skills/`. Codex, Grok, and Gemini CLI load that 
 | `format-for-narration` | `reading.elevenlabs.txt` |
 | `generate-reading-audio` | `test-4lines.mp3`, then `reading.mp3` after you confirm |
 | `audiobook-pipeline` | a straight one-voice reading: clean, optional level change, format, audio |
+| `write-course-script` | `script.jsonl` for one picture-course lesson, from the Course-Builder-Kit |
+| `proofread-course-script` | edits `script.jsonl` in place |
+| `design-course-pictures` | `pictures.json` and `style.md` |
+| `generate-course-images` | `cast.png`, `sheet-01.png` for you to confirm, then all sheets and `pictures/` |
+| `generate-course-audio` | `test-4lines.mp3`, then one clip per sentence in `audio/` after you confirm |
+| `export-course-to-app` | copies the lesson into the `app/` web player |
+| `course-pipeline` | a Winitz/Buth picture course lesson: script, pictures, audio, web player |
+
+The course pipeline needs the Course-Builder-Kit folder beside this repo (`../Course-Builder-Kit`) (or `COURSE_BUILDER_KIT` set to its path). Pictures come from Gemini (`GEMINI_API_KEY`), else Grok (`XAI_API_KEY`), else you paste the prompts into any image tool yourself. Six pictures are drawn per image as a 3x2 grid, then cut apart with ffmpeg. The player lives in `app/` and needs Node 22: `cd app && npm install && npm run dev`, then open http://localhost:8080.
 
 ### Config
 
@@ -124,6 +133,10 @@ output/<source-slug>/<chapter-slug>/
   adapted.txt            (audiobook, optional)
   reading.elevenlabs.txt (audiobook)
   reading.mp3            (audiobook)
+
+output/course-<language>/L1-01/
+  script.jsonl pictures.json style.md cast.png
+  sheets/  pictures/  audio/  test-4lines.mp3
 ```
 
 ### Scripts
@@ -135,6 +148,11 @@ python3 scripts/tprs_audio.py IN.txt OUT.mp3 --language latin --limit 4
 python3 scripts/tprs_config.py show --language latin --mode reading
 python3 scripts/format_dialogue.py IN OUT --reading
 python3 scripts/tprs_audio.py IN.txt OUT.mp3 --language latin --mode reading --limit 4
+python3 scripts/course_pictures.py plan LESSON/script.jsonl LESSON
+python3 scripts/course_pictures.py render LESSON --sheet 1
+python3 scripts/course_pictures.py cut LESSON
+python3 scripts/tprs_audio.py LESSON/script.jsonl LESSON/audio --language latin --mode course --limit 4 --join LESSON/test-4lines.mp3
+python3 scripts/export_course.py LESSON --language latin --lesson 1
 ```
 
 The audiobook sends one request per line, so keep paragraphs short. A line over the model's character limit fails.
@@ -143,6 +161,7 @@ The audiobook sends one request per line, so keep paragraphs short. A line over 
 
 ```bash
 python3 -m unittest discover -s tests -v
+cd app && npm test && npm run typecheck
 ```
 
 Pull requests into `main` must pass the `tests`, `gitleaks`, `codeql`, and `dependency-review` checks. Report vulnerabilities through [Security Advisories](https://github.com/cameronenochs/second-language-llm-tprs/security/advisories/new).

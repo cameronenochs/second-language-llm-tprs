@@ -109,7 +109,7 @@ export function withManifests(levels: readonly Level[], manifests: readonly Mani
       .map((m) => ({
         id: `${m.language}-${m.lesson}`,
         title: `${m.language[0].toUpperCase()}${m.language.slice(1)} · Lesson ${m.lesson}`,
-        detail: `${m.plates.length} pictures, ${m.rounds.length} rounds`,
+        detail: `${new Set(m.plates.map((p) => p.image)).size} pictures, ${m.rounds.length} rounds`,
         plates: m.plates,
         rounds: m.rounds,
       }));

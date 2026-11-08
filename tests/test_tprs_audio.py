@@ -157,5 +157,48 @@ class ReadingModeTests(unittest.TestCase):
             a.resolve_narrator({}, {})
 
 
+class CourseModeTests(unittest.TestCase):
+    SCRIPT = (
+        '{"id": "L1-01-01-1", "text": "Puella."}\n'
+        '{"id": "L1-01-01-2", "text": "Puella."}\n\n'
+        '{"id": "L1-01-01-3", "text": "Puer."}\n'
+        '{"id": "L1-01-01-4", "text": "Rosa est."}\n'
+    )
+
+    def test_parse_course_keeps_ids_and_rejects_bad_rows(self):
+        self.assertEqual(a.parse_course(self.SCRIPT)[1], ("L1-01-01-2", "Puella."))
+        with self.assertRaises(ValueError):
+            a.parse_course('{"text": "no id"}\n')
+
+    def test_render_dedupes_names_opaquely_and_limits_distinct_texts(self):
+        items = a.parse_course(self.SCRIPT)
+        calls = []
+        with tempfile.TemporaryDirectory() as d, \
+             mock.patch.object(a, "tts", side_effect=lambda t, v, k, out, *rest: (calls.append(t), open(out, "wb").write(b"x"))):
+            clips = a.render_course(items, d, "v", "k", "m", {}, None, limit=2)
+            with open(os.path.join(d, "index.json"), encoding="utf-8") as f:
+                index = __import__("json").load(f)
+        self.assertEqual(calls, ["Puella.", "Puer."])
+        self.assertEqual(len(clips), 2)
+        self.assertEqual(index["L1-01-01-1"], index["L1-01-01-2"])
+        self.assertNotIn("L1-01-01-4", index)
+        self.assertNotIn("Puella", index["L1-01-01-1"])
+
+    def test_main_course_join_writes_test_clip(self):
+        with tempfile.TemporaryDirectory() as d:
+            script = os.path.join(d, "script.jsonl")
+            with open(script, "w", encoding="utf-8") as f:
+                f.write(self.SCRIPT)
+            env = {"ELEVENLABS_API_KEY": "k", "NARRATOR_VOICE_ID": "n"}
+            with mock.patch.dict(os.environ, env, clear=True), \
+                 mock.patch.object(a, "tts", side_effect=lambda t, v, k, out, *rest: open(out, "wb").write(b"x")), \
+                 mock.patch.object(a, "run_ffmpeg"), mock.patch.object(a, "join_clips") as join:
+                a.main([script, os.path.join(d, "audio"), "--language", "latin", "--mode", "course",
+                        "--limit", "4", "--join", os.path.join(d, "test-4lines.mp3"),
+                        "--config", os.path.join(d, "none.json")])
+            self.assertEqual(len(join.call_args[0][0]), 3)
+            self.assertEqual(len(os.listdir(os.path.join(d, "audio"))), 4)  # 3 clips + index.json
+
+
 if __name__ == "__main__":
     unittest.main()
