@@ -153,6 +153,8 @@ python3 scripts/course_pictures.py render LESSON --sheet 1
 python3 scripts/course_pictures.py cut LESSON
 python3 scripts/tprs_audio.py LESSON/script.jsonl LESSON/audio --language latin --mode course --limit 4 --join LESSON/test-4lines.mp3
 python3 scripts/export_course.py LESSON --language latin --lesson 1
+python3 scripts/core_vocab.py fetch --language latin
+python3 scripts/core_vocab.py check LESSON/script.jsonl --language latin
 ```
 
 The audiobook sends one request per line, so keep paragraphs short. A line over the model's character limit fails.

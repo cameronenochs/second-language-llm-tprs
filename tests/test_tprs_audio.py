@@ -200,5 +200,18 @@ class CourseModeTests(unittest.TestCase):
             self.assertEqual(len(os.listdir(os.path.join(d, "audio"))), 4)  # 3 clips + index.json
 
 
+    def test_join_clips_lists_absolute_paths(self):
+        seen = []
+
+        def capture(args):
+            if "concat" in args:
+                with open(args[args.index("-i") + 1]) as f:
+                    seen.append(f.read())
+
+        with mock.patch.object(a, "run_ffmpeg", side_effect=capture):
+            a.join_clips(["audio/x.mp3"], "out.mp3")
+        self.assertIn(f"file '{os.path.abspath('audio/x.mp3')}'", seen[0])
+
+
 if __name__ == "__main__":
     unittest.main()
